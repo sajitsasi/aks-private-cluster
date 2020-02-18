@@ -23,6 +23,7 @@ The Azure CLI version 2.0.77 or later, and the Azure CLI AKS Preview extension v
    * Created a VM named ```${AZ_BASTION_VM_NAME}``` with a system managed identity with Contributor role over the AKS Resource Group
 
 
+## Commands to run after Cluster, Firewall, Bastion etc. created
 1. Login to VM
 ```
 #### Get Public IP of VM ####
@@ -58,14 +59,13 @@ kube_file="/tmp/kube${RANDOM}.config"
 az aks get-credentials --name ${AZ_AKS_NAME} -g ${AZ_RG} -f ${kube_file}
 #### Get FQDN from kube config file ####
 AKS_FQDN=$(cat ${kube_file} | grep "server:" | awk '{print $2}' | sed -e 's/:443//g' -e 's/https:\/\///g')
-
-AZ_PE_RESOURCE_ID=$(az network private-endpoint show --name ${AZ_PE_TO_AKS_MASTER} -g ${AZ_RG} --query 'networkInterfaces[0].id' -o tsv)
-
-AKS_MASTER_PE_IP=$(az resource show --ids ${AZ_PE_RESOURCE_ID} --query 'properties.ipConfigurations[0].properties.privateIPAddress' -o tsv)
-
-sudo echo "${AKS_MASTER_PE_IP} ${AKS_FQDN}" >> /etc/hosts
-
-az aks get-credentials --name ${AZ_AKS_NAME} -g ${AZ_RG} --overwrite-existing
-
 /bin/rm -rf ${kube_file}
+#### Add FQDN-->Private Endpoint translation in /etc/hosts ####
+AZ_PE_RESOURCE_ID=$(az network private-endpoint show --name ${AZ_PE_TO_AKS_MASTER} -g ${AZ_RG} --query 'networkInterfaces[0].id' -o tsv)
+AKS_MASTER_PE_IP=$(az resource show --ids ${AZ_PE_RESOURCE_ID} --query 'properties.ipConfigurations[0].properties.privateIPAddress' -o tsv)
+sudo echo "${AKS_MASTER_PE_IP} ${AKS_FQDN}" >> /etc/hosts
+#### Add AKS credentials in ~/.kube/config ####
+az aks get-credentials --name ${AZ_AKS_NAME} -g ${AZ_RG} --overwrite-existing
+#### Run kubectl commands ####
+kgno -o wide
 ```
