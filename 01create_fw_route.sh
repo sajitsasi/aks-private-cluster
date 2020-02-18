@@ -36,7 +36,10 @@ az network firewall application-rule create \
   --collection-name 'aksfwar' \
   -n 'fqdn' --source-addresses '*' \
   --protocols 'http=80' 'https=443' \
-  --target-fqdns ${AZ_FW_FQDNS} \
+  --target-fqdns '*.azurecr.io' '*.azmk8s.io' 'aksrepos.azurecr.io' \
+  '*blob.core.windows.net' '*mcr.microsoft.com' '*.cdn.mscr.io' \
+  'login.microsoftonline.com' 'management.azure.com' '*ubuntu.com' \
+  '*.docker.io' '*.quay.io' '*.gcr.io' '*.kubernetes.io' \
   --action allow \
   --priority 1000
 
@@ -48,7 +51,10 @@ az network firewall network-rule create \
   -n 'netrules' \
   --protocols 'TCP' \
   --source-addresses '*' \
-  --destination-addresses ${AZ_FW_DST_IPS} \
+  --destination-addresses '13.0.0.0/8' '20.0.0.0/8' '23.0.0.0/8' '40.0.0.0/8' \
+  '51.0.0.0/8' '52.0.0.0/8' '65.0.0.0/8' '70.0.0.0/8' '104.0.0.0/8' \
+  '131.0.0.0/8' '157.0.0.0/8' '168.0.0.0/24' '191.0.0.0/8' \
+  '199.0.0.0/8' '207.0.0.0/8' '209.0.0.0/8' \
   --destination-ports 9000 22 443 53 445 \
   --action allow \
   --priority 1000
@@ -61,7 +67,7 @@ az network firewall network-rule create \
   -n 'ntprules' \
   --protocols 'UDP' \
   --source-addresses '*' \
-  --destination-addresses ${AZ_FW_NTP_IPS} \
+  --destination-addresses '91.189.91.157' '91.189.94.4' '91.189.89.198' '91.189.89.199' \
   --destination-ports 123 \
   --action allow \
   --priority 1100
