@@ -1,6 +1,6 @@
 
 NUM="${RANDOM}"
-PREFIX="att"
+PREFIX="mykube"
 AZ_RG="${PREFIX}-aks-rg"
 AZ_LOCATION="eastus2"
 # Bastion VNET Configuration

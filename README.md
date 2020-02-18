@@ -52,12 +52,20 @@ echo "source ~/.kubectl_aliases" >> ~/.bashrc
 
 3. Get AKS Credentials
 ```
+#### Write AKS credentials ####
 . ./source_vars.sh
 kube_file="/tmp/kube${RANDOM}.config"
 az aks get-credentials --name ${AZ_AKS_NAME} -g ${AZ_RG} -f ${kube_file}
+#### Get FQDN from kube config file ####
 AKS_FQDN=$(cat ${kube_file} | grep "server:" | awk '{print $2}' | sed -e 's/:443//g' -e 's/https:\/\///g')
+
 AZ_PE_RESOURCE_ID=$(az network private-endpoint show --name ${AZ_PE_TO_AKS_MASTER} -g ${AZ_RG} --query 'networkInterfaces[0].id' -o tsv)
+
 AKS_MASTER_PE_IP=$(az resource show --ids ${AZ_PE_RESOURCE_ID} --query 'properties.ipConfigurations[0].properties.privateIPAddress' -o tsv)
+
 sudo echo "${AKS_MASTER_PE_IP} ${AKS_FQDN}" >> /etc/hosts
+
 az aks get-credentials --name ${AZ_AKS_NAME} -g ${AZ_RG} --overwrite-existing
+
+/bin/rm -rf ${kube_file}
 ```
