@@ -22,10 +22,10 @@ The Azure CLI version 2.0.77 or later, and the Azure CLI AKS Preview extension v
    * Created a Bastion VNET with a Private Endpoint to the AKS Cluster Control Plane
    * Created a VM named ```${AZ_BASTION_VM_NAME}``` with a system managed identity with Contributor role over the AKS Resource Group
 
-```
+
 1. Login to VM
 ```
-#### Get Public IP of VM####
+#### Get Public IP of VM ####
 . ./source_vars.sh
 vm_public_ip=$(az vm show -d -g ${AZ_RG} --name ${AZ_BASTION_VM_NAME} --query 'publicIps' -o tsv)
 #### Copy variable definitions to bastionvm ####
@@ -33,6 +33,7 @@ scp ./source_vars.sh user@${vm_public_ip}:./
 #### SSH to bastionvm ####
 ssh user@${vm_public_ip}
 ```
+
 2. Install tools and login with Azure
 ```
 #### Update/Upgrade ####
@@ -59,3 +60,4 @@ AZ_PE_RESOURCE_ID=$(az network private-endpoint show --name ${AZ_PE_TO_AKS_MASTE
 AKS_MASTER_PE_IP=$(az resource show --ids ${AZ_PE_RESOURCE_ID} --query 'properties.ipConfigurations[0].properties.privateIPAddress' -o tsv)
 sudo echo "${AKS_MASTER_PE_IP} ${AKS_FQDN}" >> /etc/hosts
 az aks get-credentials --name ${AZ_AKS_NAME} -g ${AZ_RG} --overwrite-existing
+```
