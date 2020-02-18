@@ -65,3 +65,28 @@ az aks get-credentials --name ${AZ_AKS_NAME} -g ${AZ_RG} --overwrite-existing
 #### Run kubectl commands ####
 kubectl get nodes -o wide
 ```
+
+4. Enable SSH Access to Nodes (Optional)
+```
+#### Add VMSS Extension from Bastion VM ####
+MC_AKS_RG=$(az aks show -g ${AZ_RG} --name ${AZ_AKS_NAME} --query nodeResourceGroup -o tsv)
+AKS_SCALE_SET_NAME=$(az vmss list --resource-group ${MC_AKS_RG} --query [0].name -o tsv)
+az vmss extension set \
+  -g ${MC_AKS_RG} \
+  --vmss-name ${AKS_SCALE_SET_NAME} \
+  --name VMAccessForLinux \
+  --publisher Microsoft.OSTCExtensions \
+  --version 1.4 \
+  --protected-settings "{\"username\":\"azureuser\", \"ssh_key\":\"$(cat ~/.ssh/id_rsa.pub)\"}"
+az vmss update-instances \
+  --instance-ids '*' \
+  -g ${MC_AKS_RG} \
+  --name ${AKS_SCALE_SET_NAME}
+#### Start aks-ssh pod to ssh to nodes and install openssh-client ####
+kubectl run --generator=run-pod/v1 -it --rm aks-ssh --image=debian
+apt-get update && apt-get install openssh-client -y
+#### In another window copy SSH id_rsa ####
+kubectl cp ~/.ssh/id_rsa $(kubectl get pod -l run=aks-ssh -o jsonpath='{.items[0].metadata.name}'):/id_rsa
+#### In SSH session ####
+chmod 0600 /id_rsa
+ssh -i /id_rsa azureuser@<node_ip>

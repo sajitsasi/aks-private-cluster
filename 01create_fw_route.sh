@@ -39,7 +39,7 @@ az network firewall application-rule create \
   --target-fqdns '*.azurecr.io' '*.azmk8s.io' 'aksrepos.azurecr.io' \
   '*blob.core.windows.net' '*mcr.microsoft.com' '*.cdn.mscr.io' \
   'login.microsoftonline.com' 'management.azure.com' '*ubuntu.com' \
-  '*.docker.io' '*.quay.io' '*.gcr.io' '*.kubernetes.io' \
+  '*.docker.io' '*.quay.io' '*.gcr.io' '*.kubernetes.io' '*debian.org' \
   --action allow \
   --priority 1000
 

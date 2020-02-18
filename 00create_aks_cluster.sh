@@ -48,19 +48,6 @@ az aks create -n ${AZ_AKS_NAME} \
 echo "Done creating AKS cluster ${AZ_AKS_NAME}"
 MC_AKS_RG=$(az aks show -g ${AZ_RG} --name ${AZ_AKS_NAME} --query nodeResourceGroup -o tsv)
 MC_AKS_VNET_NAME=$(az network vnet list -g ${MC_AKS_RG} --query '[*].name' -o tsv)
-AKS_SCALE_SET_NAME=$(az vmss list --resource-group ${MC_AKS_RG} --query [0].name -o tsv)
-az vmss extension set \
-  -g ${MC_AKS_RG} \
-  --vmss-name ${AKS_SCALE_SET_NAME} \
-  --name VMAccessForLinux \
-  --publisher Microsoft.OSTCExtensions \
-  --version 1.4 \
-  --protected-settings "{\"username\":\"azureuser\", \"ssh_key\":\"$(cat ~/.ssh/id_rsa.pub)\"}"
-
-az vmss update-instances \
-  --instance-ids '*' \
-  -g ${MC_AKS_RG} \
-  --name ${AKS_SCALE_SET_NAME}
 
 # Create AKS VNET 
 echo "Creating AKS VNET and subnets..."
