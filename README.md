@@ -63,7 +63,7 @@ AKS_FQDN=$(cat ${kube_file} | grep "server:" | awk '{print $2}' | sed -e 's/:443
 #### Add FQDN-->Private Endpoint translation in /etc/hosts ####
 AZ_PE_RESOURCE_ID=$(az network private-endpoint show --name ${AZ_PE_TO_AKS_MASTER} -g ${AZ_RG} --query 'networkInterfaces[0].id' -o tsv)
 AKS_MASTER_PE_IP=$(az resource show --ids ${AZ_PE_RESOURCE_ID} --query 'properties.ipConfigurations[0].properties.privateIPAddress' -o tsv)
-sudo echo "${AKS_MASTER_PE_IP} ${AKS_FQDN}" >> /etc/hosts
+sudo echo "${AKS_MASTER_PE_IP} ${AKS_FQDN}" | sudo tee -a /etc/hosts
 #### Add AKS credentials in ~/.kube/config ####
 az aks get-credentials --name ${AZ_AKS_NAME} -g ${AZ_RG} --overwrite-existing
 #### Run kubectl commands ####
