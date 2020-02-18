@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: http-proxy
+  namespace: kube-system
+data:
+  HTTP_PROXY:http://myhttpp.proxy.com:3128
+  HTTPS_PROXY:http://myhttpp.proxy.com:3128
+  NO_PROXY: 10.0.0.0/8,localhost,127.0.0.1,docker.io,quay.io,kubernetes.io
