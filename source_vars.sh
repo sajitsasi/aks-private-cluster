@@ -56,8 +56,3 @@ else
   AZ_PE_SUBNET="10.250.254.0/24"
   AZ_FW_SUBNET="10.250.255.0/24"
 fi
-
-# Azure Firewall Data
-AZ_FW_FQDNS="'*.azurecr.io' '*.azmk8s.io' 'aksrepos.azurecr.io' '*blob.core.windows.net' '*mcr.microsoft.com' '*.cdn.mscr.io' 'login.microsoftonline.com'     'management.azure.com' '*ubuntu.com' '*.docker.io' '*.quay.io' '*.gcr.io' '*.kubernetes.io'"
-AZ_FW_DST_IPS="'13.0.0.0/8' '20.0.0.0/8' '23.0.0.0/8' '40.0.0.0/8' '51.0.0.0/8' '52.0.0.0/8' '65.0.0.0/8' '70.0.0.0/8' '104.0.0.0/8' '131.0.0.0/8' '157.0.0.0/8' '168.0.0.0/24' '191.0.0.0/8' '199.0.0.0/8' '207.0.0.0/8' '209.0.0.0/8'"
-AZ_FW_NTP_IPS="'91.189.91.157' '91.189.94.4' '91.189.89.198' '91.189.89.199'"
