@@ -45,10 +45,6 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 az login --identity
 #### Install kubectl ####
 sudo az aks install-cli
-#### Install (Optional) kubectl tools ####
-wget https://rawgit.com/ahmetb/kubectl-alias/master/.kubectl_aliases ~/.kubectl_aliases
-echo "function kubectl() { echo "+ kubectl $@">&2; command kubectl $@; }" >> ~/.bashrc
-echo "source ~/.kubectl_aliases" >> ~/.bashrc
 ```
 
 3. Get AKS Credentials
@@ -67,5 +63,5 @@ sudo echo "${AKS_MASTER_PE_IP} ${AKS_FQDN}" | sudo tee -a /etc/hosts
 #### Add AKS credentials in ~/.kube/config ####
 az aks get-credentials --name ${AZ_AKS_NAME} -g ${AZ_RG} --overwrite-existing
 #### Run kubectl commands ####
-kgno -o wide
+kubectl get nodes -o wide
 ```
